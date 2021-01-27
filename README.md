@@ -1,6 +1,6 @@
 # RiskKit_PortfolioOptimization
 
-"""
+
 This module aims to function as a tool to examine portfolio risk and return.
 As of today, the following functions are available:
 
@@ -15,4 +15,4 @@ As of today, the following functions are available:
 + CVar Historic
 + VaR Gaussian
 
-"""
+
