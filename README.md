@@ -1,4 +1,4 @@
-# RiskKit_PortfolioOptimization
+# RiskKit_PortfolioOptimization - UNDER DEVELOPMENT
 
 
 This module aims to function as a tool to examine portfolio risk and return.
