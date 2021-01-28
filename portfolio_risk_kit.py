@@ -93,3 +93,36 @@ def var_historic(r, level = 5):
         return -np.percentile(r,level) #We put a "-" there because we prefer to report this number as positive
     else:
         raise TypeError('Expected r to be Series or DataFrame')
+
+from scipy.stats import norm
+def var_gaussian(r, level = 5, modified = False):
+    """
+    Returns the Parametric Gaussian Var of Series or DataFrme
+    If "modified" is True, then modified VaR is returned, 
+    using the Cornish-Fisher modification
+    """
+    #compute the Z score assuming it was Gaussian
+    z = norm.ppf(level/100)
+    if modified: 
+        #modify the Z score based on observed skewness and kurtosis 
+        s = skewness(r)
+        k = kurtosis (r)
+        z = (z + 
+             (z**2 - 1)* s/6+
+        (z**3 - 3*z)*(k-3)/24 - 
+        (2*z**3 - 5*z)*(s**2)/36
+        )        
+    return -(r.mean() + z * r.std(ddof = 0))
+
+def cvar_historic(r, level = 5):
+    """
+    Computes the Conditional VaR os Series or DataFrame
+    """
+    if isinstance(r, pd.Series):
+        is_beyond = r <= -var_historic(r,level=level) # This line says: Find me all the returns that are worse than
+        #historic VaR
+        return -r [is_beyond].mean()
+    elif isinstance (r, pd.DataFrame):
+        return r.aggregate(cvar_historic, level = level)
+    else:
+        raise TypeError("Expected r to be Series or DataFrame")
